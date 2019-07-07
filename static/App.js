@@ -200,23 +200,22 @@ class IssueList extends React.Component {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(newIssue)
-		}).then(response => {
-			if (response.ok) {
-				response.json().then(updatedIssue => {
-					updatedIssue.created = new Date(updatedIssue.created);
-					if (updatedIssue.completionDate) updatedIssue.completionDate = new Date(updatedIssue.completionDate);
-					const newIssues = this.state.issues.concat(updatedIssue);
-					this.setState({ issues: newIssues });
-				});
-			} else {
-				response.json().then(error => {
-					alert('Fail to add issue: ' + error.message);
-				});
-			}
-		}).catch(err => {
+		}).then(response => response.json()).then(this.loadData()).catch(err => {
 			alert("Error in sending data to server: " + err.message);
 		});
+
+		//	const newIssues = this.state.issues.slice();
+		//	newIssue.id = this.state.issues.length + 1;
+		//	newIssues.push(newIssue);
+		//	this.setState({ issues: newIssues });
 	}
+	//createTestIssue() {
+	//	this.createIssue(
+	//		{
+	//		status: 'New', owner: 'Pieta', created: new Date(),
+	//			title: 'Completion date should be optional',
+	//		});
+	//}
 
 	render() {
 		return React.createElement(

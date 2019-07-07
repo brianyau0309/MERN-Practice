@@ -38,39 +38,42 @@ const issueFieldType = {
 	title: 'required',
 };
 function validateIssue(issue) {
-	for (field in issueFieldType) {
-		var type = issueFieldType[field];
+	for (const field in issueFieldType) {
+		const type = issueFieldType[field];
 		if (!type) {
 			delete issue[field];
-		} else if (type === 'required' && !issue[field] && issue[field] === '') {
+		} else if (type === 'required' && !issue[field]) {
 			return `${field} is required.`;
 		}
 	}
 	if (!validIssueStatus[issue.status])
 		return `${issue.status} is not a valid status.`;
-	console.log('In null')
-	console.log(issue)
-	return null; 
-}
-app.get('/api/issues', (req,res) => {
-	const metadata = { total_count: issues.length }
-	res.json({ _metadata: metadata, records: issues });
-});
-app.post('/api/issues', (req,res) => {
-	const newIssue = req.body;
-	newIssue.id = issues.length + 1;
-	newIssue.created = new Date();
-	if (!newIssue.status)
-		newIssue.status = "New";
-	
-	const err = validateIssue(newIssue)
-	if (err) {
-		res.status(422).json({ message: `Invalid request: ${err}` });
-		return;
+	return null 
+};
+
+app.all('/api/issues', (req,res) => {
+	if (req.method == "POST") {
+		const newIssue = req.body;
+		console.log('Post', newIssue);
+		newIssue.id = issues.length + 1;
+		newIssue.created = new Date();
+		if (!newIssue.status) { 
+			newIssue.status = "New";
+		}	
+		const err = validateIssue(newIssue);
+		if (err) {
+			res.status(422).json({ message: `Invalid request: ${err}` });
+			return;
+		}
+		
+		issues.push(newIssue);
 	}
-	issues.push(newIssue);
+
+	if (req.method == "GET") 
+		console.log('GET');
 	
-	res.json(newIssue);
+	const metadata = { total_count: issues.length };
+	res.json({ _metadata: metadata,records: issues });
 });
 
 app.listen(3000, () => {
