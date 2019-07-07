@@ -1,36 +1,8 @@
+import IssueAdd from './IssueAdd.jsx'
+import IssueFilter from './IssueFilter.jsx'
+
 const $ = (query) => document.querySelector(query); //shortcut
 const contentNode = $("#content");
-
-// Part 1 Hello World! //
-//const continents = ["Africa","America","Asia","Australia","Europe"];
-//const message = continents.map(c => `Hello ${c}!`).join(' ');
-
-//ReactDOM.render(<h1>{message}</h1>,
-//				contentNode);
-
-
-// Part 2 React Component //
-//const issues = [
-//	{
-//		id: 1,status: "Open", owner: 'Raven',
-//		created: new Date('2019-08-15'), effort: 5, completionDate: undefined,
-//		title: 'Error in console when clicking Add',
-//	},
-//	{
-//		id: 2,status: "Assigned", owner: 'Eddie',
-//		created: new Date('2019-09-16'), effort: 5,
-//		completionDate: new Date('2019-09-30'),
-//		title: 'Missing bottom border on panel',
-//	},
-//];
-
-class IssueFilter extends React.Component {
-	render() {
-		return(
-			<div>Placeholder for Filter</div>
-		);
-	}
-}
 	
 function IssueTable (props) {
 	const issueRows = props.issues.map(issue => <IssueRow 
@@ -66,38 +38,6 @@ const IssueRow = (props) => (
 		<td>{props.issue.title}</td>
 	</tr>
 )
-	
-class IssueAdd extends React.Component {
-	constructor() {
-		super();
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-	
-	handleSubmit(e) {
-		e.preventDefault();
-		var form = document.forms.issueAdd;
-		this.props.createIssue ({
-			owner: form.owner.value,
-			title: form.title.value,
-			status: 'New',
-			created: new Date(),
-		});
-		// clear the form for the next input
-		form.owner.value = ""; form.title.value = "";
-	}
-	
-	render() {
-		return(
-			<div>
-				<form name="issueAdd" onSubmit={this.handleSubmit}>
-				<input type="text" name="owner" placeholder="Owner" />
-				<input type="text" name="title" placeholder="Title" />
-				<button>Add</button>
-				</form>
-			</div>
-			);
-		}
-	}
 
 class IssueList extends React.Component {
 	constructor(){
@@ -143,22 +83,10 @@ class IssueList extends React.Component {
 					issue.completionDate = new Date(issue.completionDate);
 			});
 				this.setState({ issues: updateIssues.records });
-		).catch(err => {
+		}).catch(err => {
 			alert("Error in sending data to server: " + err.message);
 		});
-	
-	//	const newIssues = this.state.issues.slice();
-	//	newIssue.id = this.state.issues.length + 1;
-	//	newIssues.push(newIssue);
-	//	this.setState({ issues: newIssues });
 	}
-	//createTestIssue() {
-	//	this.createIssue(
-	//		{
-	//		status: 'New', owner: 'Pieta', created: new Date(),
-	//			title: 'Completion date should be optional',
-	//		});
-	//}
 		
 	render() {
 		return(
@@ -170,8 +98,9 @@ class IssueList extends React.Component {
 				<hr />
 				<IssueAdd createIssue={this.createIssue} />
 			</div>
-			);
-		}
+		);
 	}
+}
+
 
 ReactDOM.render(<IssueList />, contentNode)

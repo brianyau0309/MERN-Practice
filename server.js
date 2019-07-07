@@ -54,7 +54,6 @@ function validateIssue(issue) {
 app.all('/api/issues', (req,res) => {
 	if (req.method == "POST") {
 		const newIssue = req.body;
-		console.log('Post', newIssue);
 		newIssue.id = issues.length + 1;
 		newIssue.created = new Date();
 		if (!newIssue.status) { 
@@ -68,9 +67,6 @@ app.all('/api/issues', (req,res) => {
 		
 		issues.push(newIssue);
 	}
-
-	if (req.method == "GET") 
-		console.log('GET');
 	
 	const metadata = { total_count: issues.length };
 	res.json({ _metadata: metadata,records: issues });
