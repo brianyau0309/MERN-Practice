@@ -7,7 +7,7 @@
     "compile": "webpack --mode production",
     "watch": "webpack --mode production --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -w server.js server.js"
+    "start": "nodemon -w server server/server.js"
   },
   "author": "Brian",
   "license": "ISC",
@@ -17,15 +17,16 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
-    "@babel/preset-env": "^7.5.0",
     "@babel/preset-react": "^7.0.0",
     "babel-cli": "^6.26.0",
     "babel-loader": "^8.0.6",
-    "babel-preset-react": "^6.24.1",
-    "glob": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
     "nodemon": "^1.19.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "webpack": "^4.35.2",
-    "webpack-cli": "^3.3.5"
+    "webpack-cli": "^3.3.5",
+    "whatwg-fetch": "^3.0.0"
   },
   "repository": {
     "type": "git",

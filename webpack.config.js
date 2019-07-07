@@ -8,18 +8,12 @@ module.exports = {
         publicPath: '/'
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.jsx$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-react']
-                        }
-                    }
-                ]
-            }
-        ]
-    }
+                use: [{ loader: 'babel-loader',
+                        options: { presets: ['@babel/preset-react'] }
+                }]
+        }]
+    },
+    devtool: 'source-map'
 }
