@@ -9,7 +9,6 @@ const validIssueStatus = {
 	Close: true,
 };
 const issueFieldType = {
-	id: 'required',
 	status: 'required',
 	owner: 'required',
 	effort: 'optional',

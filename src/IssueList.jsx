@@ -6,7 +6,7 @@ import IssueAdd from './IssueAdd.jsx';
 
 function IssueTable (props) {
 	const issueRows = props.issues.map(issue => <IssueRow 
-		key={issue.id} issue={issue} />);
+		key={issue._id} issue={issue} />);
 	return(
 		<table className="bordered-table">
 			<thead>
@@ -27,7 +27,7 @@ function IssueTable (props) {
 
 const IssueRow = (props) => (
 	<tr>
-		<td>{props.issue.id}</td>
+		<td>{props.issue._id}</td>
 		<td>{props.issue.status}</td>
 		<td>{props.issue.owner}</td>
 		<td>{props.issue.created.toDateString() }</td>
@@ -53,19 +53,25 @@ export default class IssueList extends React.Component {
 	}
 	
 	loadData() {
-		fetch('/api/issues').then(response =>
-			response.json()
-		).then(data => {
-			console.log("Total count of records:", data._metadata.total_count);
-			data.records.forEach(issue => {
-				issue.created = new Date(issue.created);
-				if (issue.completionDate) 
-					issue.completionDate = new Date(issue.completionDate);
-			});
-				this.setState({ issues: data.records });
+		fetch('/api/issues').then(response => {
+			if (response.ok) {
+				response.json().then(data => {
+					console.log("Total count of records:", data._metadata.total_count);
+					data.records.forEach(issue => {
+						issue.created = new Date(issue.created);
+						if (issue.completionDate) 
+							issue.completionDate = new Date(issue.completionDate);
+					});
+					this.setState({ issues: data.records });
+				});	
+			} else {
+				response.json().then(error => {
+					alert("Faild to fetch issues:" + error.message)
+				});
+			}		
 		}).catch(err => {
-			console.log(err);
-		});
+				console.log(err);
+			});
 	}
 	
 	createIssue(newIssue) {
@@ -75,15 +81,12 @@ export default class IssueList extends React.Component {
 			body: JSON.stringify(newIssue),
 		}).then(response =>
 			response.json()
-		).then(updateIssues => {
-			updateIssues.records.forEach(issue => {
-				issue.created = new Date(issue.created);
-				if (issue.completionDate) 
-					issue.completionDate = new Date(issue.completionDate);
-			});
-				this.setState({ issues: updateIssues.records });
-				console.log("Total count of records:", 
-							updateIssues._metadata.total_count);
+		).then(updateIssue => {
+			updateIssue.created = new Date(updateIssue.created);
+			if (updateIssue.completionDate) 
+				updateIssue.completionDate = new Date(updateIssue.completionDate);
+			var newIssues = this.state.issues.concat(updateIssue)
+			this.setState({ issues: newIssues });
 		}).catch(err => {
 			alert("Error in sending data to server: " + err.message);
 		});

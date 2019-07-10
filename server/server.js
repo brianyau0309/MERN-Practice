@@ -1,31 +1,17 @@
 'use stritc'
 const express = require('express');
 const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
+
 const Issue = require('./issue.js')
 
 const app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
 
-const issues = [
-	{
-		id: 1,status: "Open", owner: 'Raven',
-		created: new Date('2019-08-15'), effort: 5, 
-		completionDate: undefined,
-		title: 'Error in console when clicking Add',
-	},
-	{
-		id: 2,status: "Assigned", owner: 'Eddie',
-		created: new Date('2019-09-16'), effort: 5,
-		completionDate: new Date('2019-09-30'),
-		title: 'Missing bottom border on panel',
-	},
-];
-
 app.all('/api/issues', (req,res) => {
 	if (req.method == "POST") {
 		const newIssue = req.body;
-		newIssue.id = issues.length + 1;
 		newIssue.created = new Date();
 		if (!newIssue.status) { 
 			newIssue.status = "New";
@@ -36,13 +22,31 @@ app.all('/api/issues', (req,res) => {
 			return;
 		}
 		
-		issues.push(newIssue);
+		db.collection('issues').insertOne(newIssue).then(result => 
+			db.collection('issues').find({ _id: result.insertedId }).limit(1).next()
+		).then(newIssue => {
+			res.json(newIssue);
+		}).catch(err => {
+			console.log(err);
+			res.status(500).json({ message: `Internet Server Error: ${err}` });
+		});
 	}
-	
-	const metadata = { total_count: issues.length };
-	res.json({ _metadata: metadata,records: issues });
+	if (req.method == "GET") {
+		db.collection('issues').find().toArray().then(issues => {
+			const metadata = { total_count: issues.length };
+			res.json({ _metadata: metadata,records: issues });
+		}).catch(err => {
+			console.log(err);
+			res.status(500).json({ message: `Internet Server Error: ${err}` });
+		});
+	};
 });
 
-app.listen(3000, () => {
-	console.log('App started on http://localhost:3000');
+MongoClient.connect('mongodb://localhost/', { useNewUrlParser: true }).then(connection => {
+	db = connection.db('issuetracker');
+	app.listen(3000, () => {
+		console.log('App started on http://localhost:3000');
+	});
+}).catch(error => {
+	console.log('Error', error)
 });
