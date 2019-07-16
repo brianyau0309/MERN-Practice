@@ -1,9 +1,22 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default class IssueFilter extends React.Component {
 	render() {
+        const Separator = () => <span> | </span>
 		return(
-			<div>Placeholder for Filter</div>
+			<div>
+                <Link to="/issues">All Issue</Link>
+                <Separator />
+                <Link to="/issues?status=Open">
+                    Open Issues
+                </Link>
+                <Separator />
+                <Link to="/issues?status=Assigned">
+                    Assigned Issues
+                </Link>
+                <Separator />
+            </div>
 		);
 	}
 }

@@ -32,7 +32,11 @@ app.all('/api/issues', (req,res) => {
 		});
 	}
 	if (req.method == "GET") {
-		db.collection('issues').find().toArray().then(issues => {
+        var filter = {};
+        if (req.query.status) filter.status = req.query.status;
+        if (req.query.owner) filter.owner = req.query.owner;
+
+		db.collection('issues').find(filter).toArray().then(issues => {
 			const metadata = { total_count: issues.length };
 			res.json({ _metadata: metadata,records: issues });
 		}).catch(err => {
