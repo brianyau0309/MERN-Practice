@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+const path = require('path')
 
 const Issue = require('./issue.js')
 
@@ -45,6 +46,10 @@ app.all('/api/issues', (req,res) => {
 		});
 	};
 });
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve('static/index.html'));
+})
 
 MongoClient.connect('mongodb://localhost/', { useNewUrlParser: true }).then(connection => {
 	db = connection.db('issuetracker');

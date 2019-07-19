@@ -1,6 +1,6 @@
 import React from 'react';
 import 'whatwg-fetch';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 import IssueFilter from './IssueFilter.jsx';
 import IssueAdd from './IssueAdd.jsx';
@@ -44,13 +44,14 @@ const IssueRow = (props) => (
 	</tr>
 )
 
-export default class IssueList extends React.Component {
+class IssueList extends React.Component {
 	constructor(){
 		super();
 		this.state = { issues: [] };
 		//this.createTestIssue = this.createTestIssue.bind(this);
 		//setTimeout(this.createTestIssue, 2000);
 		this.createIssue = this.createIssue.bind(this);
+        this.setFilter = this.setFilter.bind(this);
 	}
 		
 	componentDidMount() {
@@ -103,12 +104,19 @@ export default class IssueList extends React.Component {
 			alert("Error in sending data to server: " + err.message);
 		});
 	}
+    
+    setFilter(query) {
+        if (query.status) {
+            this.props.history.push("?status="+query.status);
+        } else {
+            this.props.history.push("/issues");
+        }
+    }
 		
 	render() {
 		return(
 			<div>
-				<h1>Issue Tracker</h1>
-				<IssueFilter />
+				<IssueFilter setFilter={this.setFilter} />
 				<hr />
 				<IssueTable issues={this.state.issues} />
 				<hr />
@@ -117,3 +125,5 @@ export default class IssueList extends React.Component {
 		);
 	}
 }
+
+export default withRouter(IssueList)
