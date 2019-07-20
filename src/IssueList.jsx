@@ -5,6 +5,19 @@ import { Link, withRouter } from 'react-router-dom'
 import IssueFilter from './IssueFilter.jsx';
 import IssueAdd from './IssueAdd.jsx';
 
+const getQueryString = (query) => {
+    let keys = Object.keys(query), key, queryString = null;
+    if (keys.length !== 0) {
+        key = keys.shift();
+        queryString = '?' + key + '='  + query[key];
+        while (keys.length !== 0) {
+            key = keys.shift();
+            queryString += '&' + key + '='  + query[key];
+        }
+    } 
+    return queryString
+}
+
 function IssueTable (props) {
 	const issueRows = props.issues.map(issue => <IssueRow 
 		key={issue._id} issue={issue} />);
@@ -106,17 +119,16 @@ class IssueList extends React.Component {
 	}
     
     setFilter(query) {
-        if (query.status) {
-            this.props.history.push("?status="+query.status);
-        } else {
-            this.props.history.push("/issues");
-        }
+        let queryString = getQueryString(query);
+        if (queryString === null) queryString = '/issues';
+        this.props.history.push(queryString);
     }
 		
 	render() {
 		return(
 			<div>
-				<IssueFilter setFilter={this.setFilter} />
+				<IssueFilter setFilter={this.setFilter}
+                initFilter={this.props.location.search}/>
 				<hr />
 				<IssueTable issues={this.state.issues} />
 				<hr />
