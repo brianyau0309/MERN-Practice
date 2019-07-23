@@ -31,10 +31,12 @@ export default class IssueEdit extends React.Component {
     }
     
     onSubmit(event) {
-        fetch(`/api/issues/${this.props.match.params.id}`, {
+        let issue = this.state.issue;
+        issue.effort = Number.parseInt(issue.effort);
+        fetch(`/api/issue/${this.props.match.params.id}`, {
             method: "PUT",
-            headers: { 'Context-Type': 'application/json' },
-            body: JSON.stringify(this.state.issue),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(issue),
         }).then(res => {
             if (res.ok) {
                 res.json().then(updateIssue => {
@@ -56,7 +58,7 @@ export default class IssueEdit extends React.Component {
     }
 
     loadData() {
-        fetch(`/api/issues/${this.props.match.params.id}`).then(response => {
+        fetch(`/api/issue/${this.props.match.params.id}`).then(response => {
             if (response.ok) {
                 response.json().then(issue => {
                     issue.created = new Date(issue.created);
@@ -95,7 +97,7 @@ export default class IssueEdit extends React.Component {
                     <br />
                     Owner: <input name="owner" value={issue.owner} onChange={this.onChange} />
                     <br />
-                    Effort: <input name='effort' size={5} value={issue.effort} onChange={this.onChange} />
+                    Effort: <input type='number' name='effort' value={issue.effort} onChange={this.onChange} />
                     <br />
                     Completion Date: <input name='completionDate' value={issue.completionDate} onChange={this.onChange} />
                     <br />

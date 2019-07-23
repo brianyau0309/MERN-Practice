@@ -52,7 +52,7 @@ app.all('/api/issues', (req,res) => {
 });
 
 
-app.get('/api/issues/:id', (req, res) => {
+app.get('/api/issue/:id', (req, res) => {
     let issueId;
     try {
         issueId = new ObjectId(req.params.id);      
@@ -76,7 +76,6 @@ app.put('/api/issue/:id', (req, res) => {
     let issueId;
     try {
         issueId = new ObjectId(req.params.id);
-        console.log(issueId);
     } catch (error) {
         res.status(422).json({ message: `Innvalid issue ID formt: ${error}` });
         return;
